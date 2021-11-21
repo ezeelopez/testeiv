@@ -1,5 +1,6 @@
 package eiv.example.demo.servicios;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
@@ -105,6 +106,11 @@ public class UsuarioServicios {
 			return buscar;
 		}
 	
+	 @Transactional
+	 public List<Usuarios> buscarTodosLosNombreUsuarios(String nombre_usuario){
+		 List<Usuarios> buscar = rpsUsuario.buscarnombreusuario(nombre_usuario);
+		 return buscar;
+	 }
 	 
 	 
 	 @Transactional(readOnly = true)
@@ -123,9 +129,14 @@ public class UsuarioServicios {
 			throw new WebException("no puede ser nulo");	
 		}
 		
-		if(nombre_usuario == null || nombre_usuario.isEmpty()) {
-			throw new WebException("el nombre no puese ser nulo o vacio");
+		List<Usuarios> nombreusuario = buscarTodosLosNombreUsuarios(nombre_usuario);
+		
+		for (Usuarios nombreusuario1 : nombreusuario) {
+			if(nombreusuario1.getNombre_usuario() == null || nombreusuario1.getNombre_usuario().equals(nombreusuario)) {
+				throw new WebException("este nombre de usuario ya existe");
+			}
 		}
+		
 		if(hashed_pwd == null || hashed_pwd.isEmpty()) {
 			throw new WebException("no puese ser nulo o vacio");
 		}
