@@ -132,7 +132,10 @@ public Personas daralta(Integer numero_documento , boolean alta) throws WebExcep
 			return buscar;
 		}
 	
-	
+	public List<Personas> mostrartodos(){
+		List<Personas> mostrar = rpsPersonas.findAll();
+		return mostrar;
+	}
 	
 	
 	
