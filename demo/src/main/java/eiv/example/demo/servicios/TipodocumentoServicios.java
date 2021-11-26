@@ -44,6 +44,10 @@ public class TipodocumentoServicios {
 		
 	}
 	
+	public void eliminar(Tipodocumento documento) throws Exception {
+		rpstipodocumento.deleteById(documento.getIdtipodocumento());
+	}
+	
 
 	 @Transactional(readOnly = true)
 		public List<Tipodocumento> buscarTodosLosDocumentos(){

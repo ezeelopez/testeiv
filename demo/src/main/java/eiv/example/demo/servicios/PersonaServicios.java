@@ -9,12 +9,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import eiv.example.demo.entidades.Localidad;
+
 import eiv.example.demo.entidades.Persona;
-import eiv.example.demo.entidades.Tipodocumento;
+
 import eiv.example.demo.errores.WebException;
 import eiv.example.demo.repositorio.PersonaRepositorios;
-import eiv.example.demo.repositorio.TipodocumentoRepositorios;
+
 
 @Service
 public class PersonaServicios {
@@ -22,63 +22,35 @@ public class PersonaServicios {
 	@Autowired
 	private PersonaRepositorios rpsPersonas;
 	
-	@Autowired
-	private TipodocumentoRepositorios rpsTipodocumento;
+
 	
 	// METODO PARA REGISTRAR UNA PERSONA
 	@Transactional
-	public Persona registrar(Integer numerodocumento , Tipodocumento idtipodocumento,
-		    String nombre , String apellido , LocalDate fechanacimiento , char genero,
-		    boolean esargentino, String correoelectronico ,
-			Localidad localidad , String codigopostal) throws WebException{
+	public Persona registrar(Persona persona) throws WebException{
+		
+		validar(persona);
+        verificarargentino(persona);
+	return	rpsPersonas.save(persona);
 	
-		
-		verificarargentino(esargentino);
-		
-		Persona persona = new Persona();
-	
-		persona.setNumeroDocumento(numerodocumento);
-		persona.setTipodocumento(idtipodocumento);
-		persona.setNombre(nombre);
-		persona.setApellido(apellido);
-		persona.setFechaNacimineto(fechanacimiento);
-		persona.setGenero(genero);
-		persona.setEsArgentino(esargentino);
-		persona.setAlta(true);
-		persona.setCorreoElectronico(correoelectronico);
-		persona.setLocalidad(localidad);
-		persona.setCodigoPostal(codigopostal);
-		
-		rpsPersonas.save(persona);
-		return persona;
 	}
 	
 	//METODO PARA MODIFICAR UNA PERSONA
 	 @Transactional
-	public Persona modificar(Integer numerodocumento , Tipodocumento tipodocumento,
-		    String nombre , String apellido , LocalDate fechanacimiento , char genero,
-		    boolean esargentino, String correoelectronico ,
-			Localidad localidad , String codigopostal) throws WebException{
+	public Persona modificar(Persona persona) throws WebException{
 		
-	
-		
-		verificarargentino(esargentino);
-		// UN METODO QUE ME AYUDA A ENCONTRAR EL ID DE LA PERSONA , SI LLEGA A EXISTIR ME LO MODIFICA
-		 Optional<Persona> modificar = buscarPersonaPorID(numerodocumento);	
+		 Optional<Persona> modificar = buscarPersonaPorID(persona.getNumeroDocumento());	
 		 if(modificar.isPresent()) {
-			 Persona persona = modificar.get();
+			 Persona personas = modificar.get();
 				
-				persona.setNumeroDocumento(numerodocumento);
-				persona.setTipodocumento(tipodocumento);
-				persona.setNombre(nombre);
-				persona.setApellido(apellido);
-				persona.setFechaNacimineto(fechanacimiento);
-				persona.setGenero(genero);
-				persona.setEsArgentino(esargentino);
-				persona.setAlta(true);
-				persona.setCorreoElectronico(correoelectronico);
-				persona.setLocalidad(localidad);
-				persona.setCodigoPostal(codigopostal);
+				personas.setNombre(persona.getNombre());
+				personas.setApellido(persona.getApellido());
+				personas.setFechaNacimineto(persona.getFechaNacimineto());
+				personas.setGenero(persona.getGenero());
+				personas.setEsArgentino(persona.isEsArgentino());
+				personas.setAlta(true);
+				personas.setCorreoElectronico(persona.getCorreoElectronico());
+				personas.setLocalidad(persona.getLocalidad());
+				personas.setCodigoPostal(persona.getCodigoPostal());
 				
 				rpsPersonas.save(persona);
 				return persona;
@@ -88,15 +60,22 @@ public class PersonaServicios {
 		
 	}
 		
+	 //METODO PARA ELIMINAR
+	 public void eliminar(Persona persona) throws Exception{
+		 rpsPersonas.deleteById(persona.getNumeroDocumento());
+	 }
+	 
+	 
+	 
 	
 	// METODO PARA DAR DE BAJA UNA PERSONA
 	 @Transactional
-	public Persona darBaja(Integer numero_documento , boolean alta) throws WebException{
+	public Persona darBaja(Persona persona) throws WebException{
 		
-		Optional<Persona> modificar = buscarPersonaPorID(numero_documento);
+		Optional<Persona> modificar = buscarPersonaPorID(persona.getNumeroDocumento());
 		if(modificar.isPresent()) {
-			Persona persona = modificar.get();
-			persona.setAlta(false);
+			Persona personas = modificar.get();
+			personas.setAlta(false);
 			return rpsPersonas.save(persona);
 			
 		}else {
@@ -107,12 +86,12 @@ public class PersonaServicios {
 
 	// METODO PARA DAR DE ALTA UNA PERSONA
 	 @Transactional
-public Persona daralta(Integer numero_documento , boolean alta) throws WebException{
+public Persona daralta(Persona persona) throws WebException{
 		
-		Optional<Persona> modificar = buscarPersonaPorID(numero_documento);
+		Optional<Persona> modificar = buscarPersonaPorID(persona.getNumeroDocumento());
 		if(modificar.isPresent()) {
-			Persona persona = modificar.get();
-			persona.setAlta(true);
+			Persona personas = modificar.get();
+			personas.setAlta(true);
 			return rpsPersonas.save(persona);
 			
 		}else {
@@ -139,72 +118,70 @@ public Persona daralta(Integer numero_documento , boolean alta) throws WebExcept
 	
 	
 	// METODO PARA BUSCAR TODOS LOS DOCUMENTO DE LA PERSONA
-	/*
+	
 	 @Transactional(readOnly = true)
-	public List<Persona> buscarTodoLosDocumentos(Integer numero_docuemnto){
-		List<Persona> buscarpordocuemento = rpsPersonas.buscarTodoLosDocumentos(numero_docuemnto);
+	public List<Persona> buscarTodoLosDocumentos(Integer numerodocuemnto){
+		List<Persona> buscarpordocuemento = rpsPersonas.buscarTodoLosDocumentos(numerodocuemnto);
 		return buscarpordocuemento;
-	} */
+	} 
 	
 	// METODO PARA VALIDAR SI EL TIPO DE DOCUMENTO ES ARGENTINO O  EXTRANJERO
 	 @Transactional
-	public void verificarargentino(boolean esargentino) {
-		Tipodocumento documento = (Tipodocumento) rpsTipodocumento.findAll();
-		if(documento.getAbreviatura().equalsIgnoreCase("DNI")) {
-			esargentino = true;
+	public void verificarargentino(Persona persona) {
+		   
+		if(persona.getTipodocumento().getAbreviatura().equalsIgnoreCase("DNI")) {
+			persona.setEsArgentino(true); 
 		}else {
-			esargentino = false;
+			persona.setEsArgentino(false);
 		}
 	}
 	
 	
 	// METODO DE VALIDACION
-	 /*
-	private void validar(Integer numerodocumento , Tipodocumento tipodocumento,
-		    String nombre , String apellido ,LocalDate fechanacimiento , char genero,
-		     String correoelectronico ,Localidad localidad , String codigopostal) throws WebException{
+	 
+	private void validar(Persona persona) throws WebException{
 		
-		List<Persona> numero_documento1 = buscarTodoLosDocumentos(numerodocumento);
+		List<Persona> numero_documento1 = buscarTodoLosDocumentos(persona.getNumeroDocumento());
 		for(Persona numero_documento : numero_documento1) {
 			if(numero_documento.getNumeroDocumento() == null || numero_documento.getNumeroDocumento().equals(numero_documento1)) {
 				throw new WebException("el numero de documento ya existe");
 			}
 		}
-		if(tipodocumento == null) {
+		if(persona.getTipodocumento() == null) {
 			throw new WebException("el tipo de documento no puede estar nulo o vacio");
 			
 		}
 		
-		if(nombre == null || nombre.isEmpty()) {
+		if(persona.getNombre() == null || persona.getNombre().isEmpty()) {
 			throw new WebException("el nombre no puede ser nulo o vacio");
 			
 		}
-		if(apellido == null || apellido.isEmpty()) {
+		if(persona.getApellido() == null || persona.getApellido().isEmpty()) {
 			throw new WebException("el apellido no puede ser nulo o vacio");
 			
 		}
-		if(fechanacimiento == null) {
+		if(persona.getFechaNacimineto() == null) {
 			throw new WebException("la fecha nacimiento no puede ser nulo");
 			
 		}
 		
-		if(genero == 'm' && genero == 'f') {
+		if(persona.getGenero() == 'm' && persona.getGenero() == 'f') {
 			
 		}else {
 			throw new WebException("el genero no puede ser nula o ingrese correctamente");
 		}
 		
-		if(correoelectronico == null || correoelectronico.isEmpty()) {
+		if(persona.getCorreoElectronico() == null || persona.getCorreoElectronico().isEmpty()) {
 			throw new WebException("el correo electronico no puede ser nulo o vacio");
 			
 		}
-		if(localidad == null) {
+		if(persona.getLocalidad() == null) {
 			throw new WebException("la localidad no puede nulo o vacio");
 		}
-		if(codigopostal == null || codigopostal.isEmpty()) {
+		if(persona.getCodigoPostal() == null || persona.getCodigoPostal().isEmpty()) {
 			throw new WebException("el codigo postal no puede ser nulo o vacio");
 		}
-	} */
+	} 
 	
 
 }

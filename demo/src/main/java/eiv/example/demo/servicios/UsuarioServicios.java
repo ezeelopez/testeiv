@@ -49,6 +49,14 @@ public class UsuarioServicios {
 		
 	}
 	
+	@Transactional
+	public void eliminar(Usuario usuario) throws Exception{
+		rpsUsuario.deleteById(usuario.getId());
+	}
+	
+	
+	
+	
 	 @Transactional
 		public Usuario darBaja(Usuario usuario) throws WebException{
 			

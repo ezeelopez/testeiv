@@ -47,6 +47,11 @@ public class LocalidadServicios {
 		
 	}
 	
+	@Transactional
+	public void eliminar(Localidad localidad) throws Exception {
+		rpsLocalidades.deleteById(localidad.getIdlocalidad());
+	}
+	
 	
 
 	 @Transactional(readOnly = true)

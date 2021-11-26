@@ -11,8 +11,8 @@ import eiv.example.demo.entidades.Persona;
 public interface PersonaRepositorios extends JpaRepository<Persona, Integer>{
 	// QUERY PARA BUSCAR TODAS LAS PERSONAS QUE CONTENGA UN DOCUMENTO EN LA BASE DE DATO
 	
-	/*
+	
 	@Query("SELECT a FROM Personas a WHERE a.numerodocumento =:numerodocumento")
-	public List<Persona> buscarTodoLosDocumentos(@Param("numerodocumento") Integer numero_documento);
-     */
+	public List<Persona> buscarTodoLosDocumentos(@Param("numerodocumento") Integer numerodocumento);
+     
 }

@@ -1,20 +1,16 @@
 package eiv.example.demo.controladores;
 
-import java.time.LocalDate;
-import java.util.Date;
-import java.util.List;
 
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-
-import eiv.example.demo.entidades.Localidad;
 import eiv.example.demo.entidades.Persona;
-import eiv.example.demo.entidades.Tipodocumento;
 import eiv.example.demo.errores.WebException;
 import eiv.example.demo.servicios.PersonaServicios;
 
@@ -32,32 +28,33 @@ public class PersonaControlador {
 	
 	
 	@PostMapping("/registrar")
-	public Persona registrar(@RequestParam Integer numero_docuemnto , @RequestParam Tipodocumento id_documento ,@RequestParam String nombre,
-			@RequestParam String apellido, LocalDate fecha_nacimineto,
-			@RequestParam char genero ,@RequestParam boolean es_argentino,@RequestParam String correo_electronico,@RequestParam Localidad id_localidades,
-			@RequestParam String codigo_postal) throws WebException{
+	public Persona registrar(@RequestBody Persona persona) throws WebException{
 		
-		return servPersonas.registrar(numero_docuemnto, id_documento, nombre, apellido,
-				fecha_nacimineto, genero, es_argentino, correo_electronico, id_localidades, codigo_postal);
+		return servPersonas.registrar(persona);
 	}
 	
-	@PostMapping("/modificar")
-	public Persona modificar(@RequestParam Integer numero_docuemnto , @RequestParam Tipodocumento id_documento ,@RequestParam String nombre,
-			@RequestParam String apellido, LocalDate fecha_nacimineto,
-			@RequestParam char genero ,@RequestParam boolean es_argentino,@RequestParam String correo_electronico,@RequestParam Localidad id_localidades,
-			@RequestParam String codigo_postal) throws WebException {
+	@PutMapping("/modificar")
+	public Persona modificar(@RequestBody Persona persona) throws WebException {
 		
-		return servPersonas.modificar(numero_docuemnto, id_documento, nombre, apellido, fecha_nacimineto, genero, es_argentino, correo_electronico, id_localidades, codigo_postal);                   
+		servPersonas.buscarPersonaPorID(persona.getNumeroDocumento());
+		return servPersonas.modificar(persona);                   
+	}
+	
+	@DeleteMapping("/eliminar")
+	public void eliminar(Persona persona) throws Exception {
+		servPersonas.eliminar(persona);
 	}
 
-	@PostMapping("/dar-baja")
-	public Persona darbaja(@RequestParam Integer numero_documento , @RequestParam boolean alta) throws WebException {
-	   return servPersonas.darBaja(numero_documento, alta);
+	@PutMapping("/dar-baja")
+	public Persona darbaja(@RequestBody Persona persona) throws WebException {
+		servPersonas.buscarPersonaPorID(persona.getNumeroDocumento());
+	   return servPersonas.darBaja(persona);
 	}
 	
-	@PostMapping("/dar-alta")
-	public Persona daralta(@RequestParam Integer numero_documento , @RequestParam boolean alta) throws WebException {
-		return servPersonas.daralta(numero_documento, alta);
+	@PutMapping("/dar-alta")
+	public Persona daralta(@RequestBody Persona persona ) throws WebException {
+		servPersonas.buscarPersonaPorID(persona.getNumeroDocumento());
+		return servPersonas.daralta(persona);
 	}
 	
 }
