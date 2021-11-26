@@ -14,8 +14,8 @@ import eiv.example.demo.entidades.Usuario;
 public interface UsuarioRepositorios extends JpaRepository<Usuario, Integer>{
 	
 	
-	@Query("SELECT a FROM Usuarios a WHERE a.nombreusuario =:nombreusuario")
-public List<Usuario> buscarnombreusuario(@Param("nombreusuario") String nombreusuario);
+	@Query("SELECT a FROM Usuario a WHERE a.nombreUsuario =:nombreUsuario")
+public List<Usuario> buscarnombreusuario(@Param("nombreUsuario") String nombreusuario);
 
 
 	
