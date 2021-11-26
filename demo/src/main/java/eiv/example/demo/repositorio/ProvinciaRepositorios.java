@@ -3,9 +3,9 @@ package eiv.example.demo.repositorio;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import eiv.example.demo.entidades.Tipo_documentos;
+import eiv.example.demo.entidades.Provincia;
 
 @Repository
-public interface Tipo_documentoRepositorios extends JpaRepository<Tipo_documentos, Integer>{
+public interface ProvinciaRepositorios extends JpaRepository<Provincia, Integer> {
 
 }

@@ -1,6 +1,6 @@
 package eiv.example.demo.servicios;
 
-import java.util.Iterator;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -8,9 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import eiv.example.demo.entidades.Personas;
-import eiv.example.demo.entidades.Tipo_documentos;
-import eiv.example.demo.entidades.Usuarios;
+
+import eiv.example.demo.entidades.Usuario;
 import eiv.example.demo.errores.WebException;
 import eiv.example.demo.repositorio.UsuarioRepositorios;
 
@@ -22,37 +21,25 @@ public class UsuarioServicios {
 	private UsuarioRepositorios rpsUsuario;
 	
 	@Transactional
-	public Usuarios registra(Tipo_documentos id_documentos, Personas numero_documento, 
-			String nombre_usuario, String hashed_pwd , String hashed_pwd2) throws WebException{
+	public Usuario registra(Usuario usuario) throws WebException{
 		
-		validar(id_documentos, numero_documento, 
-				nombre_usuario,hashed_pwd , hashed_pwd2);
-		
-		Usuarios usuario = new Usuarios();
-		usuario.setId_documento(id_documentos);
-		usuario.setNumero_documento(numero_documento);
-		usuario.setNombre_usuario(nombre_usuario);
-		usuario.setHashed_pwd(hashed_pwd);
-		usuario.setAlta(true);
-		rpsUsuario.save(usuario);
-		return usuario;
+		validar(usuario);
+	
+		return rpsUsuario.save(usuario);
 		
 	}
 	
 	@Transactional
-	public Usuarios modificar( Integer id ,Tipo_documentos id_documentos, Personas numero_documento, 
-			String nombre_usuario, String hashed_pwd , String hashed_pwd2)throws WebException {
+	public Usuario modificar(Usuario usuario)throws WebException {
 		
-		validar(id_documentos, numero_documento, 
-				nombre_usuario,hashed_pwd , hashed_pwd2);
-		
-		 Optional<Usuarios> modificar = buscarUsuarioPorID(id);
+	
+		 Optional<Usuario> modificar = buscarUsuarioPorID(usuario.getId());
 		 if(modificar.isPresent()) {
-			 Usuarios usuario = modificar.get();
+			 Usuario usuar = modificar.get();
 		;
-				usuario.setNombre_usuario(nombre_usuario);
-				usuario.setHashed_pwd(hashed_pwd);
-				usuario.setAlta(true);
+				usuar.setNombreUsuario(usuario.getNombreUsuario());
+				usuar.setHashedPwd(usuario.getHashedPwd());
+				usuar.setAlta(true);
 				rpsUsuario.save(usuario);
 				return usuario;
 			 
@@ -63,12 +50,12 @@ public class UsuarioServicios {
 	}
 	
 	 @Transactional
-		public Usuarios darBaja(Integer id , boolean alta) throws WebException{
+		public Usuario darBaja(Usuario usuario) throws WebException{
 			
-			Optional<Usuarios> modificar = buscarUsuarioPorID(id);
+			Optional<Usuario> modificar = buscarUsuarioPorID(usuario.getId());
 			if(modificar.isPresent()) {
-			  Usuarios usuario = modificar.get();
-				usuario.setAlta(false);
+			  Usuario usuar = modificar.get();
+				usuar.setAlta(false);
 				
 			rpsUsuario.save(usuario);
 				return usuario;
@@ -80,12 +67,12 @@ public class UsuarioServicios {
 		}
 
 	 @Transactional
-		public Usuarios darAlta(Integer id , boolean alta) throws WebException{
+		public Usuario darAlta(Usuario usuario) throws WebException{
 			
-			Optional<Usuarios> modificar = buscarUsuarioPorID(id);
+			Optional<Usuario> modificar = buscarUsuarioPorID(usuario.getId());
 			if(modificar.isPresent()) {
-			  Usuarios usuario = modificar.get();
-				usuario.setAlta(true);
+			  Usuario usuar = modificar.get();
+				usuar.setAlta(true);
 				
 			rpsUsuario.save(usuario);
 				return usuario;
@@ -101,48 +88,48 @@ public class UsuarioServicios {
 	
 	
 	 @Transactional(readOnly = true)
-		public Optional<Usuarios> buscarUsuarioPorID(Integer id){
-			Optional<Usuarios> buscar = rpsUsuario.findById(id);
+		public Optional<Usuario> buscarUsuarioPorID(Integer id){
+			Optional<Usuario> buscar = rpsUsuario.findById(id);
 			return buscar;
 		}
 	
+	 
 	 @Transactional
-	 public List<Usuarios> buscarTodosLosNombreUsuarios(String nombre_usuario){
-		 List<Usuarios> buscar = rpsUsuario.buscarnombreusuario(nombre_usuario);
+	 public List<Usuario> buscarTodosLosNombreUsuarios(String nombreusuario){
+		 List<Usuario> buscar = rpsUsuario.buscarnombreusuario(nombreusuario);
 		 return buscar;
-	 }
+	 } 
 	 
 	 
 	 @Transactional(readOnly = true)
-		public List<Usuarios> buscarTodasLosUsuarios(){
-			List<Usuarios> buscar = rpsUsuario.findAll();	
+		public List<Usuario> buscarTodasLosUsuarios(){
+			List<Usuario> buscar = rpsUsuario.findAll();	
 			return buscar;
 		}
 	
 	
-	private void validar(Tipo_documentos id_documentos, Personas numero_documento, 
-			String nombre_usuario, String hashed_pwd , String hashed_pwd2) throws WebException {
-		if(id_documentos == null) {
+	private void validar(Usuario usuario) throws WebException {
+		if(usuario.getDocumento() == null) {
 			throw new WebException("no puede ser nulo");
 		}
-		if(numero_documento == null) {
+		if(usuario.getNumeroDocumento() == null) {
 			throw new WebException("no puede ser nulo");	
 		}
 		
-		List<Usuarios> nombreusuario = buscarTodosLosNombreUsuarios(nombre_usuario);
+		List<Usuario> nombre = buscarTodosLosNombreUsuarios(usuario.getNombreUsuario());
 		
-		for (Usuarios nombreusuario1 : nombreusuario) {
-			if(nombreusuario1.getNombre_usuario() == null || nombreusuario1.getNombre_usuario().equals(nombreusuario)) {
+		for (Usuario nombreusuario1 : nombre) {
+			if(nombreusuario1.getNombreUsuario() == null || nombreusuario1.getNombreUsuario().equals(nombre)) {
 				throw new WebException("este nombre de usuario ya existe");
 			}
 		}
 		
-		if(hashed_pwd == null || hashed_pwd.isEmpty()) {
+		if(usuario.getHashedPwd() == null || usuario.getHashedPwd().isEmpty()) {
 			throw new WebException("no puese ser nulo o vacio");
 		}
-		if(!hashed_pwd2.equals(hashed_pwd)) {
+		if(!usuario.getHashedPwd().equals(usuario.getHashedPwd())) {
 			throw new WebException("la clave no coincide");
 		}
-	}
+	} 
 	
 }

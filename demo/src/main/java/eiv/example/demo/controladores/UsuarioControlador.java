@@ -6,12 +6,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import eiv.example.demo.entidades.Personas;
-import eiv.example.demo.entidades.Tipo_documentos;
-import eiv.example.demo.entidades.Usuarios;
+import eiv.example.demo.entidades.Persona;
+import eiv.example.demo.entidades.Tipodocumento;
+import eiv.example.demo.entidades.Usuario;
 import eiv.example.demo.errores.WebException;
 import eiv.example.demo.servicios.UsuarioServicios;
 
@@ -23,30 +24,28 @@ public class UsuarioControlador {
 	private UsuarioServicios servUsuario;
 	
 	@GetMapping("/mostrar")
-	public List<Usuarios> mostrartodo()throws WebException {
+	public List<Usuario> mostrartodo()throws WebException {
 		return servUsuario.buscarTodasLosUsuarios();
 	}
 	
 	@PostMapping("/registrar")
-	public Usuarios registrar(@RequestParam Tipo_documentos id_docuemento, @RequestParam Personas numerodocuemtno ,
-			@RequestParam String nombreusuario , @RequestParam  String hashed_pwd , @RequestParam String hashed_pwd2) throws WebException {
-		return servUsuario.registra(id_docuemento, numerodocuemtno, nombreusuario, hashed_pwd, hashed_pwd2);
+	public Usuario registrar(Usuario usuario) throws WebException {
+		return servUsuario.registra(usuario);
 	}
 	
-	@PostMapping("/modificar")
-	public Usuarios modificar( @RequestParam Integer id ,@RequestParam Tipo_documentos id_documentos, @RequestParam Personas numero_documento, 
-			@RequestParam String nombre_usuario,@RequestParam String hashed_pwd ,@RequestParam String hashed_pwd2)throws WebException {
-		return servUsuario.modificar(id, id_documentos, numero_documento, nombre_usuario, hashed_pwd, hashed_pwd2);
+	@PutMapping("/modificar")
+	public Usuario modificar(Usuario usuario)throws WebException {
+		return servUsuario.modificar(usuario);
 	}
 	
 	
-	@PostMapping("/dar-baja")
-	public Usuarios darbaja(@RequestParam Integer id , @RequestParam boolean alta) throws WebException {
-		return servUsuario.darBaja(id, alta);
+	@PutMapping("/dar-baja")
+	public Usuario darbaja(Usuario usuario) throws WebException {
+		return servUsuario.darBaja(usuario);
 	}
 	
-	@PostMapping("/dar-alta")
-	public Usuarios daralta(@RequestParam Integer id , @RequestParam boolean alta) throws WebException {
-		return servUsuario.darAlta(id, alta);
+	@PutMapping("/dar-alta")
+	public Usuario daralta(Usuario usuario) throws WebException {
+		return servUsuario.darAlta(usuario);
 	}
 }

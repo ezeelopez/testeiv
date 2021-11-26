@@ -8,13 +8,14 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import eiv.example.demo.entidades.Usuarios;
+import eiv.example.demo.entidades.Usuario;
 
 @Repository
-public interface UsuarioRepositorios extends JpaRepository<Usuarios, Integer>{
+public interface UsuarioRepositorios extends JpaRepository<Usuario, Integer>{
 	
-	@Query("SELECT a FROM Usuarios a WHERE a.nombre_usuario =:nombre_usuario")
-public List<Usuarios> buscarnombreusuario(@Param("nombre_usuario") String nombre_usuario);
+	
+	@Query("SELECT a FROM Usuarios a WHERE a.nombreusuario =:nombreusuario")
+public List<Usuario> buscarnombreusuario(@Param("nombreusuario") String nombreusuario);
 
 
 	
