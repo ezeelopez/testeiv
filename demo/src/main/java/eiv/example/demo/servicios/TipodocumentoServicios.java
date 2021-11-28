@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.HttpClientErrorException.NotFound;
 
 import eiv.example.demo.entidades.Tipodocumento;
 import eiv.example.demo.errores.WebException;
@@ -18,14 +19,20 @@ public class TipodocumentoServicios {
 	private TipodocumentoRepositorios rpstipodocumento;
 	
 	@Transactional
-	public Tipodocumento registra(Tipodocumento documento) throws WebException {
-	    validar(documento);
-	    rpstipodocumento.save(documento);
-		 return documento;
+	public Tipodocumento registra(Tipodocumento documento) throws Exception {
+		
+		try {
+			  validar(documento);
+			    rpstipodocumento.save(documento);
+				 return documento;
+		}catch(NotFound e) {
+			throw new Exception();
+		}
+	  
 	}
 	
 	@Transactional
-	public Tipodocumento modificar(Tipodocumento documento) throws WebException{
+	public Tipodocumento modificar(Tipodocumento documento) throws Exception{
            
 		validar(documento);
 		
@@ -39,7 +46,7 @@ public class TipodocumentoServicios {
 			    rpstipodocumento.save(documento);
 				 return documento;
 		   }else {
-			   throw new WebException("no se ha encontrado la solicitud");
+			   throw new Exception("no se ha encontrado la solicitud");
 		   }
 		
 	}

@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.HttpClientErrorException.NotFound;
 
 import eiv.example.demo.entidades.Localidad;
 
@@ -20,17 +21,23 @@ public class LocalidadServicios {
 	private LocalidadRepositorio rpsLocalidades;
 	
 	@Transactional
-	public Localidad registrar(Localidad localidad) throws WebException {
+	public Localidad registrar(Localidad localidad) throws Exception {
 		
-	validar(localidad);
-	return	rpsLocalidades.save(localidad);
+		try {
+			validar(localidad);
+			return	rpsLocalidades.save(localidad);
+		}catch(NotFound e) {
+			throw new Exception();
+		}
+		
+	
 	
 	}
 	
 	
 	
 	@Transactional
-	public Localidad modificar(Localidad localidad) throws WebException {
+	public Localidad modificar(Localidad localidad) throws Exception {
 	
 		 Optional<Localidad> modificar = buscarLocalidadPorID(localidad.getIdlocalidad());
 		 if(modificar.isPresent()) {
@@ -42,7 +49,7 @@ public class LocalidadServicios {
 		   	return	rpsLocalidades.save(localidad);
 				
 		 }else {
-			 throw new WebException("no se ha encontrado la solicitud");
+			 throw new Exception("no se ha encontrado la solicitud");
 		 }
 		
 	}

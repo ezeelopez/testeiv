@@ -11,9 +11,9 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.HttpClientErrorException.NotFound;
 
 import eiv.example.demo.entidades.Persona;
-import eiv.example.demo.errores.WebException;
 import eiv.example.demo.servicios.PersonaServicios;
 
 @RestController
@@ -27,39 +27,74 @@ public class PersonaControlador {
 	
 	
 	@GetMapping("/mostrartodo")
-	public List<Persona> mostrar()throws WebException {
-		return servPersonas.mostrartodos();
+	public List<Persona> mostrar()throws Exception {
+		
+		try {
+			return servPersonas.mostrartodos();
+		}catch(NotFound e) {
+			throw new Exception();
+		}
+	
 	}
 	
 	
 	@PostMapping("/registrar")
-	public Persona registrar(@RequestBody Persona persona) throws WebException{
+	public Persona registrar(@RequestBody Persona persona) throws Exception{
 		
-		return servPersonas.registrar(persona);
+		try {
+			return servPersonas.registrar(persona);
+		}catch(NotFound e) {
+			throw new Exception();
+		}
+		
+		
 	}
 	
 	@PutMapping("/modificar")
-	public Persona modificar(@RequestBody Persona persona) throws WebException {
+	public Persona modificar(@RequestBody Persona persona) throws Exception {
 		
-		servPersonas.buscarPersonaPorID(persona.getNumeroDocumento());
-		return servPersonas.modificar(persona);                   
+		try {
+			servPersonas.buscarPersonaPorID(persona.getNumeroDocumento());
+			return servPersonas.modificar(persona);          
+		}catch(NotFound e) {
+			throw new Exception();
+		}
+		
+		         
 	}
 	
 	@DeleteMapping("/eliminar")
 	public void eliminar(@RequestBody Persona persona) throws Exception {
-		servPersonas.eliminar(persona);
+		
+		try {
+			servPersonas.eliminar(persona);
+		}catch(NotFound e) {
+			throw new Exception();
+		}
+		
+		
 	}
 
 	@PutMapping("/dar-baja")
-	public Persona darbaja(@RequestBody Persona persona) throws WebException {
-		servPersonas.buscarPersonaPorID(persona.getNumeroDocumento());
-	   return servPersonas.darBaja(persona);
+	public Persona darbaja(@RequestBody Persona persona) throws Exception {
+		try {
+			servPersonas.buscarPersonaPorID(persona.getNumeroDocumento());
+			   return servPersonas.darBaja(persona);
+		}catch(NotFound e) {
+			throw new Exception();
+		}
+		
 	}
 	
 	@PutMapping("/dar-alta")
-	public Persona daralta(@RequestBody Persona persona ) throws WebException {
-		servPersonas.buscarPersonaPorID(persona.getNumeroDocumento());
-		return servPersonas.daralta(persona);
+	public Persona daralta(@RequestBody Persona persona ) throws Exception {
+		try {
+			servPersonas.buscarPersonaPorID(persona.getNumeroDocumento());
+			return servPersonas.daralta(persona);
+		}catch(NotFound e) {
+			throw new Exception();
+		}
+		
 	} 
 	
 }

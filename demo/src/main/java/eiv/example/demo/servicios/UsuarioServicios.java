@@ -7,7 +7,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
+import org.springframework.web.client.HttpClientErrorException.NotFound;
 
 import eiv.example.demo.entidades.Usuario;
 import eiv.example.demo.errores.WebException;
@@ -21,16 +21,21 @@ public class UsuarioServicios {
 	private UsuarioRepositorios rpsUsuario;
 	
 	@Transactional
-	public Usuario registra(Usuario usuario) throws WebException{
+	public Usuario registra(Usuario usuario) throws Exception{
 		
-		validar(usuario);
-	
-		return rpsUsuario.save(usuario);
+		try {
+			validar(usuario);
+			
+			return rpsUsuario.save(usuario);
+		}catch(NotFound e) {
+			throw new Exception();
+		}
+		
 		
 	}
 	
 	@Transactional
-	public Usuario modificar(Usuario usuario)throws WebException {
+	public Usuario modificar(Usuario usuario)throws Exception {
 		
 	
 		 Optional<Usuario> modificar = buscarUsuarioPorID(usuario.getId());
@@ -44,7 +49,7 @@ public class UsuarioServicios {
 				return usuario;
 			 
 		 }else {
-			 throw new WebException("no se ha encontrado la solicitud");
+			 throw new Exception("no se ha encontrado la solicitud");
 		 }
 		
 	}
@@ -58,7 +63,7 @@ public class UsuarioServicios {
 	
 	
 	 @Transactional
-		public Usuario darBaja(Usuario usuario) throws WebException{
+		public Usuario darBaja(Usuario usuario) throws Exception{
 			
 			Optional<Usuario> modificar = buscarUsuarioPorID(usuario.getId());
 			if(modificar.isPresent()) {
@@ -69,13 +74,13 @@ public class UsuarioServicios {
 				return usuario;
 				
 			}else {
-				throw new WebException("no se ha encontrado la solicitud");
+				throw new Exception("no se ha encontrado la solicitud");
 			}
 			
 		}
 
 	 @Transactional
-		public Usuario darAlta(Usuario usuario) throws WebException{
+		public Usuario darAlta(Usuario usuario) throws Exception{
 			
 			Optional<Usuario> modificar = buscarUsuarioPorID(usuario.getId());
 			if(modificar.isPresent()) {
@@ -86,7 +91,7 @@ public class UsuarioServicios {
 				return usuario;
 				
 			}else {
-				throw new WebException("no se ha encontrado la solicitud");
+				throw new Exception("no se ha encontrado la solicitud");
 			}
 			
 		}

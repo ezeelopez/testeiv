@@ -6,7 +6,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
+import org.springframework.web.client.HttpClientErrorException.NotFound;
 
 import eiv.example.demo.entidades.Provincia;
 import eiv.example.demo.errores.WebException;
@@ -24,15 +24,21 @@ public class ProvinciaServicios {
 	@Transactional
 	public Provincia registrar(Provincia provincia) throws Exception {
 		
-		validar(provincia);
-	
-		return rpsProvincias.save(provincia);
+		try {
+			validar(provincia);
+			
+			return rpsProvincias.save(provincia);
+			
+		}catch(NotFound e) {
+			throw new Exception();
+		}
+		
 		
 	}
 	
 	//METODO PARA MODIFICAR UNA PROVINCIA
 	@Transactional
-	public Provincia modificar(Provincia provincia) throws WebException {
+	public Provincia modificar(Provincia provincia) throws Exception {
          
 		 Optional<Provincia> modificar = buscarProvinciasPorID(provincia.getIdProvincia());
 		     if(modificar.isPresent()){
@@ -40,9 +46,11 @@ public class ProvinciaServicios {
 		    	 provi.setNombre(provincia.getNombre());
 		    	 provi.setRegion(provincia.getRegion());
 		    	 return rpsProvincias.save(provincia);
+		     }else {
+		    	 throw new Exception("la solicitud no se ha encontrado");
 		     }
 
-		return rpsProvincias.save(provincia);
+
 	}
 	
     @Transactional

@@ -10,11 +10,11 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
+import org.springframework.web.client.HttpClientErrorException.NotFound;
 
 import eiv.example.demo.entidades.Provincia;
-import eiv.example.demo.errores.WebException;
 import eiv.example.demo.servicios.ProvinciaServicios;
+
 
 @RestController
 @RequestMapping("/provincia")
@@ -25,26 +25,47 @@ public class ProvinciaControlador {
 
 	
 	@GetMapping("/mostrar")
-	public List<Provincia> mostrarTodasLasProvincias() throws WebException{
+	public List<Provincia> mostrarTodasLasProvincias() throws Exception{
+		try {
 		return servProvincias.buscarTodasLasProvincias();
+		}catch(NotFound e) {
+			e.getMessage();
+			throw new Exception();
+		}
+	
 	} 
 	
 	@PostMapping("/registrar")
 	public  Provincia registar( @RequestBody Provincia provincia) throws Exception {
-		return servProvincias.registrar(provincia);
+		try {
+			return servProvincias.registrar(provincia);
+		}catch(NotFound e) {
+			throw new Exception();
+		}
+		
+		
 	}
 	
 	
 	@PutMapping("/modificar")
-    public Provincia modificar( @RequestBody Provincia provincia)throws WebException {
-		
-		       servProvincias.buscarProvinciasPorID(provincia.getIdProvincia());
-	    return servProvincias.modificar(provincia);
+    public Provincia modificar( @RequestBody Provincia provincia)throws Exception {
+		try {
+			 servProvincias.buscarProvinciasPorID(provincia.getIdProvincia());
+			    return servProvincias.modificar(provincia);
+		}catch(NotFound e) {
+			throw new Exception();
+		}
+		      
 	} 
 	
 	@DeleteMapping("/eliminar")
 	public void eliminar(@RequestBody Provincia provincia)throws Exception {
-		    servProvincias.eliminar(provincia);
+		try {
+			 servProvincias.eliminar(provincia);
+		}catch(NotFound e) {
+			throw new Exception();
+		}
+		   
 	}
 	
 	

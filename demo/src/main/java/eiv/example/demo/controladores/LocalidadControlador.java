@@ -10,9 +10,9 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.HttpClientErrorException.NotFound;
 
 import eiv.example.demo.entidades.Localidad;
-import eiv.example.demo.errores.WebException;
 import eiv.example.demo.servicios.LocalidadServicios;
 
 @RestController
@@ -24,25 +24,50 @@ public class LocalidadControlador {
 	
 	
 	@GetMapping("/mostrar")
-	public List<Localidad> mostrar()throws WebException {
-		return servLocalidades.buscarTodosLasLocalidades();
+	public List<Localidad> mostrar()throws Exception {
+		
+		try {
+			return servLocalidades.buscarTodosLasLocalidades();
+		}catch(NotFound e) {
+			throw new Exception();
+		}
+	
 	}
 	
 	
 	@PostMapping("/registrar")
-	public Localidad registrar(@RequestBody Localidad localidad) throws WebException {
-		return servLocalidades.registrar(localidad);
+	public Localidad registrar(@RequestBody Localidad localidad) throws Exception {
+		
+		try {
+			return servLocalidades.registrar(localidad);
+		}catch(NotFound e) {
+			throw new Exception();
+		}
+		
+	
 	}
 	
 	@PutMapping("/modificar")
-	public Localidad modificar(@RequestBody Localidad localidad) throws WebException {
-		servLocalidades.buscarLocalidadPorID(localidad.getIdlocalidad());
-	    return servLocalidades.modificar(localidad);
+	public Localidad modificar(@RequestBody Localidad localidad) throws Exception {
+		
+		try {
+			servLocalidades.buscarLocalidadPorID(localidad.getIdlocalidad());
+		    return servLocalidades.modificar(localidad);
+		}catch(NotFound e) {
+			throw new Exception();
+		}
+		
 	}
 	
 	@DeleteMapping("/eliminar")
 	public void eliminar(Localidad localidad) throws Exception {
-		servLocalidades.eliminar(localidad);
+		try {
+			servLocalidades.eliminar(localidad);
+		}catch(NotFound e) {
+			throw new Exception();
+		}
+		
+		
 	}
 	
 	
