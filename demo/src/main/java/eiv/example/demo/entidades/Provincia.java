@@ -2,6 +2,7 @@ package eiv.example.demo.entidades;
 
 import java.util.Objects;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -11,10 +12,13 @@ import javax.persistence.Id;
 public class Provincia {
 @Id
 @GeneratedValue(strategy = GenerationType.IDENTITY)
+   @Column(name = "ID_PROVINCIA")
 	private Integer idProvincia;
 	
+    @Column(name = "NOMBRE")
 	private String nombre;
-	
+    
+    @Column(name = "REGION")
 	private String region;
 
 	

@@ -2,24 +2,29 @@ package eiv.example.demo.entidades;
 
 import java.util.Objects;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 
 @Entity
 public class Localidad {
 @Id
 @GeneratedValue(strategy = GenerationType.IDENTITY)
+@Column(name = "ID_LOCALIDAD")
 	private Integer idlocalidad;
 	
+@Column(name = "NOMBRE")
 	private String nombre;
 	
-	@OneToOne
+    @OneToOne
+	@JoinColumn(name = "ID_PROVINCIA")
 	private Provincia provincia;
 	
+	@Column(name = "CODIGO_POSTAL")
 	private String codigopostal;
 	
 	
@@ -48,19 +53,6 @@ public class Localidad {
 	}
 
 
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Localidad other = (Localidad) obj;
-		return Objects.equals(codigopostal, other.codigopostal) && Objects.equals(idlocalidad, other.idlocalidad)
-				&& Objects.equals(nombre, other.nombre) && Objects.equals(provincia, other.provincia);
-	}
 
 
 

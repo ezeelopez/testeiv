@@ -1,40 +1,56 @@
 package eiv.example.demo.entidades;
 
 import java.time.LocalDate;
-import java.util.Objects;
+
+import javax.persistence.Column;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.IdClass;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 
 
 @Entity
+@IdClass(value = PersonaPK.class)
 public class Persona {
-
+	
+	
 	@Id
+	@Column(name = "NUMERO_DOCUMENTO")
 	private Integer numeroDocumento;
 	
-	@OneToOne
-	private Tipodocumento tipodocumento;
+	@Id
+	@JoinColumn(name = "ID_TIPODOCUMENTO")
+   private Tipodocumento documento;
+
 	
+	
+	@Column(name = "NOMBRE")
 	private String nombre;
 	
+	@Column(name = "APELLIDO")
 	private String apellido;
 	
-	
+	@Column(name = "FECHA_NACIMIENTO")
 	private LocalDate fechaNacimineto;
 	
+	@Column(name = "GENERO")
 	private char genero;
 	
+	@Column(name = "ES_ARGENTINO")
 	private boolean esArgentino;
 	
 	private boolean alta;
 	
+	@Column(name = "CORREO_ELECTRONICO")
 	private String correoElectronico;
 	
 	@OneToOne
+	@JoinColumn(name = "ID_LOCALIDAD")
 	private Localidad localidad;
 	
+	@Column(name = "CODIGO_POSTAL")
 	private String codigoPostal;
 	
 	
@@ -44,13 +60,12 @@ public class Persona {
 	}
 
 
-	
-	public Persona(Integer numeroDocumento, Tipodocumento tipodocumento, String nombre, String apellido,
+	public Persona( Integer numeroDocumento, String nombre, String apellido, Tipodocumento documento,
 			LocalDate fechaNacimineto, char genero, boolean esArgentino, boolean alta, String correoElectronico,
 			Localidad localidad, String codigoPostal) {
 		super();
 		this.numeroDocumento = numeroDocumento;
-		this.tipodocumento = tipodocumento;
+	    this.documento = documento;
 		this.nombre = nombre;
 		this.apellido = apellido;
 		this.fechaNacimineto = fechaNacimineto;
@@ -63,35 +78,8 @@ public class Persona {
 	}
 
 
-
-
-	@Override
-	public int hashCode() {
-		return Objects.hash(alta, apellido, codigoPostal, correoElectronico, esArgentino, fechaNacimineto, genero,
-				localidad, nombre, numeroDocumento, tipodocumento);
-	}
-
-
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Persona other = (Persona) obj;
-		return alta == other.alta && Objects.equals(apellido, other.apellido)
-				&& Objects.equals(codigoPostal, other.codigoPostal)
-				&& Objects.equals(correoElectronico, other.correoElectronico) && esArgentino == other.esArgentino
-				&& Objects.equals(fechaNacimineto, other.fechaNacimineto) && genero == other.genero
-				&& Objects.equals(localidad, other.localidad) && Objects.equals(nombre, other.nombre)
-				&& Objects.equals(numeroDocumento, other.numeroDocumento)
-				&& Objects.equals(tipodocumento, other.tipodocumento);
-	}
-
-
+	
+	
 
 
 
@@ -100,22 +88,10 @@ public class Persona {
 	}
 
 
-
 	public void setNumeroDocumento(Integer numeroDocumento) {
 		this.numeroDocumento = numeroDocumento;
 	}
 
-
-
-	public Tipodocumento getTipodocumento() {
-		return tipodocumento;
-	}
-
-
-
-	public void setTipodocumento(Tipodocumento tipodocumento) {
-		this.tipodocumento = tipodocumento;
-	}
 
 
 
@@ -224,6 +200,20 @@ public class Persona {
 	public void setCodigoPostal(String codigoPostal) {
 		this.codigoPostal = codigoPostal;
 	}
+
+
+	public Tipodocumento getDocumento() {
+		return documento;
+	}
+
+
+	public void setDocumento(Tipodocumento documento) {
+		this.documento = documento;
+	}
+
+
+
+
 	
 	
 	

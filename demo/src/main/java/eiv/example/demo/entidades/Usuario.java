@@ -2,10 +2,12 @@ package eiv.example.demo.entidades;
 
 import java.util.Objects;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 
 @Entity
@@ -15,16 +17,20 @@ public class Usuario {
 private Integer id;
 
    @OneToOne
+	@JoinColumn(name = "ID_TIPODOCUMENTO")
     private Tipodocumento documento;
 	
 
 	@OneToOne
+	@JoinColumn(name = "NUMERO_DOCUMENTO")
 	private Persona numeroDocumento;
 
+	@Column(name = "NOMBRE_USUARIO")
 	private String nombreUsuario;
 	
 	private boolean alta;
 	
+	@Column(name = "HASHED_PWD")
 	private String hashedPwd;
 	
 	

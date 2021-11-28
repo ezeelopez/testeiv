@@ -33,6 +33,7 @@ public class PersonaServicios {
 	return	rpsPersonas.save(persona);
 	
 	}
+	 
 	
 	//METODO PARA MODIFICAR UNA PERSONA
 	 @Transactional
@@ -129,7 +130,7 @@ public Persona daralta(Persona persona) throws WebException{
 	 @Transactional
 	public void verificarargentino(Persona persona) {
 		   
-		if(persona.getTipodocumento().getAbreviatura().equalsIgnoreCase("DNI")) {
+		if(persona.getDocumento().getAbreviatura().equalsIgnoreCase("DNI")) {
 			persona.setEsArgentino(true); 
 		}else {
 			persona.setEsArgentino(false);
@@ -147,7 +148,7 @@ public Persona daralta(Persona persona) throws WebException{
 				throw new WebException("el numero de documento ya existe");
 			}
 		}
-		if(persona.getTipodocumento() == null) {
+		if(persona.getDocumento() == null) {
 			throw new WebException("el tipo de documento no puede estar nulo o vacio");
 			
 		}

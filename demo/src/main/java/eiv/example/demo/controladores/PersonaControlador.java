@@ -23,6 +23,9 @@ public class PersonaControlador {
 	@Autowired
 	private PersonaServicios servPersonas;
 	
+	
+	
+	
 	@GetMapping("/mostrartodo")
 	public List<Persona> mostrar()throws WebException {
 		return servPersonas.mostrartodos();
@@ -57,6 +60,6 @@ public class PersonaControlador {
 	public Persona daralta(@RequestBody Persona persona ) throws WebException {
 		servPersonas.buscarPersonaPorID(persona.getNumeroDocumento());
 		return servPersonas.daralta(persona);
-	}
+	} 
 	
 }

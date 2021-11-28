@@ -2,6 +2,7 @@ package eiv.example.demo.entidades;
 
 import java.util.Objects;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -10,12 +11,16 @@ import javax.persistence.Id;
 public class Tipodocumento {
 @Id
 @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "ID_TIPODOCUMENTO")
 	private Integer idtipodocumento;
 	
+    @Column(name = "NOMBRE")
 	private String nombre;
 	
+   @Column(name = "ABREVIATURA")
 	private String abreviatura;
 	
+	@Column(name = "VALIDAR_COMO_CUIT")
 	private boolean validarcomocuit;
 	
 	public Tipodocumento(){
