@@ -39,7 +39,6 @@ public class PersonaServicios {
 	}
 	 
 	
-	//METODO PARA MODIFICAR UNA PERSONA
 	 @Transactional
 	public Persona modificar(Persona persona) throws Exception{
 		

@@ -3,6 +3,8 @@ package eiv.example.demo.controladores;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.HttpClientErrorException.NotFound;
 
 import eiv.example.demo.entidades.Localidad;
+import eiv.example.demo.entidades.Provincia;
 import eiv.example.demo.servicios.LocalidadServicios;
 
 @RestController
@@ -20,55 +23,65 @@ import eiv.example.demo.servicios.LocalidadServicios;
 public class LocalidadControlador {
      
 	@Autowired
-	private LocalidadServicios servLocalidades;
+	private LocalidadServicios servLocalidad;
 	
-	
-	@GetMapping("/mostrar")
-	public List<Localidad> mostrar()throws Exception {
-		
-		try {
-			return servLocalidades.buscarTodosLasLocalidades();
-		}catch(NotFound e) {
-			throw new Exception();
-		}
-	
-	}
+
 	
 	
 	@PostMapping("/registrar")
-	public Localidad registrar(@RequestBody Localidad localidad) throws Exception {
+	public ResponseEntity<Localidad> registrar(@RequestBody Localidad localidad) throws Exception {
 		
 		try {
-			return servLocalidades.registrar(localidad);
-		}catch(NotFound e) {
-			throw new Exception();
+		
+			
+			return new ResponseEntity<Localidad>(servLocalidad.registrar(localidad), HttpStatus.CREATED);
+			
+		}catch(Exception e) {
+			
+			return new ResponseEntity<> (HttpStatus.BAD_REQUEST);
 		}
 		
 	
 	}
 	
 	@PutMapping("/modificar")
-	public Localidad modificar(@RequestBody Localidad localidad) throws Exception {
+	public ResponseEntity<Localidad> modificar(@RequestBody Localidad localidad) throws Exception {
 		
 		try {
-			servLocalidades.buscarLocalidadPorID(localidad.getIdlocalidad());
-		    return servLocalidades.modificar(localidad);
-		}catch(NotFound e) {
-			throw new Exception();
+			servLocalidad.buscarLocalidadPorID(localidad.getIdlocalidad());
+		    
+			return new ResponseEntity<Localidad>(servLocalidad.modificar(localidad), HttpStatus.ACCEPTED);
+			
+		}catch(Exception e) {
+			
+			return new ResponseEntity<> (HttpStatus.NOT_FOUND);
 		}
 		
 	}
 	
 	@DeleteMapping("/eliminar")
-	public void eliminar(Localidad localidad) throws Exception {
+	public ResponseEntity<Localidad> eliminar(Localidad localidad) throws Exception {
 		try {
-			servLocalidades.eliminar(localidad);
-		}catch(NotFound e) {
-			throw new Exception();
+			servLocalidad.eliminar(localidad);
+			 return new ResponseEntity<Localidad>(HttpStatus.OK);
+		}catch(Exception e) {
+	
+			return new ResponseEntity<> (HttpStatus.NOT_FOUND);
 		}
 		
 		
 	}
 	
+	
+	@GetMapping("/mostrar")
+	public List<Localidad> mostrar()throws Exception {
+		
+		try {
+			return servLocalidad.buscarTodosLasLocalidades();
+		}catch(NotFound e) {
+			throw new Exception();
+		}
+	
+	}
 	
 }

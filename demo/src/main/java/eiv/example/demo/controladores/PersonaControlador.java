@@ -3,7 +3,8 @@ package eiv.example.demo.controladores;
 
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
-
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.HttpClientErrorException.NotFound;
 
+import ch.qos.logback.classic.Logger;
 import eiv.example.demo.entidades.Persona;
 import eiv.example.demo.servicios.PersonaServicios;
 
@@ -21,80 +23,100 @@ import eiv.example.demo.servicios.PersonaServicios;
 public class PersonaControlador {
 	
 	@Autowired
-	private PersonaServicios servPersonas;
+	private PersonaServicios servPersona;
 	
 	
 	
-	
-	@GetMapping("/mostrartodo")
-	public List<Persona> mostrar()throws Exception {
-		
-		try {
-			return servPersonas.mostrartodos();
-		}catch(NotFound e) {
-			throw new Exception();
-		}
-	
-	}
 	
 	
 	@PostMapping("/registrar")
-	public Persona registrar(@RequestBody Persona persona) throws Exception{
+	public ResponseEntity<Persona> registrar(@RequestBody Persona persona) throws Exception{
 		
 		try {
-			return servPersonas.registrar(persona);
-		}catch(NotFound e) {
-			throw new Exception();
+	
+			return new ResponseEntity<Persona>(servPersona.registrar(persona), HttpStatus.CREATED);
+			
+		}catch(Exception e) {
+			
+			return new ResponseEntity<> (HttpStatus.BAD_REQUEST);
+			
 		}
 		
 		
 	}
 	
 	@PutMapping("/modificar")
-	public Persona modificar(@RequestBody Persona persona) throws Exception {
+	public ResponseEntity<Persona> modificar(@RequestBody Persona persona) throws Exception {
 		
 		try {
-			servPersonas.buscarPersonaPorID(persona.getNumeroDocumento());
-			return servPersonas.modificar(persona);          
-		}catch(NotFound e) {
-			throw new Exception();
+			
+			servPersona.buscarPersonaPorID(persona.getNumeroDocumento());
+			servPersona.modificar(persona);
+			return new ResponseEntity<Persona>(servPersona.modificar(persona), HttpStatus.ACCEPTED);
+			
+
+			
+		}catch(Exception e) {
+		
+			return new ResponseEntity<> (HttpStatus.NOT_FOUND);
 		}
 		
 		         
 	}
 	
 	@DeleteMapping("/eliminar")
-	public void eliminar(@RequestBody Persona persona) throws Exception {
+	public ResponseEntity<Persona> eliminar(@RequestBody Persona persona) throws Exception {
 		
 		try {
-			servPersonas.eliminar(persona);
-		}catch(NotFound e) {
-			throw new Exception();
+			servPersona.eliminar(persona);
+			return new ResponseEntity<Persona>(HttpStatus.OK);
+			
+		}catch(Exception e) {
+			
+			return new ResponseEntity<> (HttpStatus.NOT_FOUND);
 		}
 		
 		
 	}
 
 	@PutMapping("/dar-baja")
-	public Persona darbaja(@RequestBody Persona persona) throws Exception {
+	public ResponseEntity<Persona> darbaja(@RequestBody Persona persona) throws Exception {
 		try {
-			servPersonas.buscarPersonaPorID(persona.getNumeroDocumento());
-			   return servPersonas.darBaja(persona);
-		}catch(NotFound e) {
-			throw new Exception();
+			servPersona.buscarPersonaPorID(persona.getNumeroDocumento());
+			return new ResponseEntity<Persona>(servPersona.darBaja(persona), HttpStatus.ACCEPTED);
+			 
+		}catch(Exception e) {
+		
+			return new ResponseEntity<> (HttpStatus.NOT_FOUND);
 		}
 		
 	}
 	
 	@PutMapping("/dar-alta")
-	public Persona daralta(@RequestBody Persona persona ) throws Exception {
+	public ResponseEntity<Persona> daralta(@RequestBody Persona persona ) throws Exception {
 		try {
-			servPersonas.buscarPersonaPorID(persona.getNumeroDocumento());
-			return servPersonas.daralta(persona);
-		}catch(NotFound e) {
-			throw new Exception();
+			servPersona.buscarPersonaPorID(persona.getNumeroDocumento());
+	
+			return new ResponseEntity<Persona>(servPersona.daralta(persona), HttpStatus.ACCEPTED);
+			
+		}catch(Exception e) {
+
+			return new ResponseEntity<> (HttpStatus.NOT_FOUND);
 		}
 		
 	} 
+	
+
+	
+	@GetMapping("/mostrartodo")
+	public List<Persona> mostrar()throws Exception {
+		
+		try {
+			return servPersona.mostrartodos();
+		}catch(NotFound e) {
+			throw new Exception();
+		}
+	
+	}
 	
 }

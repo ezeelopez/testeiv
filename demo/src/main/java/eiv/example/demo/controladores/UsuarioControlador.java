@@ -3,6 +3,8 @@ package eiv.example.demo.controladores;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import org.springframework.web.client.HttpClientErrorException.NotFound;
 
-
+import eiv.example.demo.entidades.Localidad;
 import eiv.example.demo.entidades.Usuario;
 import eiv.example.demo.servicios.UsuarioServicios;
 
@@ -23,34 +25,31 @@ public class UsuarioControlador {
 	@Autowired
 	private UsuarioServicios servUsuario;
 	
-	@GetMapping("/mostrar")
-	public List<Usuario> mostrartodo()throws Exception {
-		
-		try {
-			return servUsuario.buscarTodasLosUsuarios();
-		}catch(NotFound e) {
-			throw new Exception();
-		}
-		
-	
-	}
-	
+
+
 	@PostMapping("/registrar")
-	public Usuario registrar(Usuario usuario) throws Exception {
+	public ResponseEntity<Usuario> registrar(Usuario usuario) throws Exception {
 		try {
-			return servUsuario.registra(usuario);
-		}catch(NotFound e) {
-			throw new Exception();
+
+			return new ResponseEntity<Usuario>(servUsuario.registra(usuario), HttpStatus.CREATED);
+			
+		}catch(Exception e) {
+			
+			return new ResponseEntity<> (HttpStatus.BAD_REQUEST);
 		}
 		
 	}
 	
 	@PutMapping("/modificar")
-	public Usuario modificar(Usuario usuario)throws Exception {
+	public ResponseEntity<Usuario> modificar(Usuario usuario)throws Exception {
 		try {
-			return servUsuario.modificar(usuario);
-		}catch(NotFound e) {
-			throw new Exception();
+		
+			servUsuario.buscarUsuarioPorID(usuario.getId());
+			return new ResponseEntity<Usuario>(servUsuario.modificar(usuario), HttpStatus.ACCEPTED);
+			
+		}catch(Exception e) {
+		
+			return new ResponseEntity<> (HttpStatus.NOT_FOUND);
 		}
 		
 		
@@ -58,12 +57,14 @@ public class UsuarioControlador {
 	}
 	
 	@DeleteMapping("/eliminar")
-	public void eliminar(Usuario usuario) throws Exception {
+	public ResponseEntity<Usuario> eliminar(Usuario usuario) throws Exception {
 		
 		try {
 			servUsuario.eliminar(usuario);
-		}catch(NotFound e) {
-			throw new Exception();
+			 return new ResponseEntity<Usuario>(HttpStatus.OK);
+			
+		}catch(Exception e) {
+			return new ResponseEntity<> (HttpStatus.NOT_FOUND);
 		}
 		
 		
@@ -71,24 +72,40 @@ public class UsuarioControlador {
 	
 	
 	@PutMapping("/dar-baja")
-	public Usuario darbaja(Usuario usuario) throws Exception {
+	public ResponseEntity<Usuario> darbaja(Usuario usuario) throws Exception {
 		
 		try {
-			return servUsuario.darBaja(usuario);
-		}catch(NotFound e) {
-			throw new Exception();
+			servUsuario.buscarUsuarioPorID(usuario.getId());
+			return new ResponseEntity<Usuario>(servUsuario.darBaja(usuario), HttpStatus.ACCEPTED);
+			
+		}catch(Exception e) {
+			return new ResponseEntity<> (HttpStatus.NOT_FOUND);
 		}
 		
 		
 	}
 	
 	@PutMapping("/dar-alta")
-	public Usuario daralta(Usuario usuario) throws Exception {
+	public ResponseEntity<Usuario> daralta(Usuario usuario) throws Exception {
 		try {
-			return servUsuario.darAlta(usuario);
-		}catch(NotFound e) {
-			throw new Exception();
+			servUsuario.buscarUsuarioPorID(usuario.getId());
+			return new ResponseEntity<Usuario>(servUsuario.darAlta(usuario), HttpStatus.ACCEPTED);
+		}catch(Exception e) {
+		
+			return new ResponseEntity<> (HttpStatus.NOT_FOUND);
+			
 		}
 		
 	}
+	
+	@GetMapping("/mostrar")
+	public List<Usuario> mostrartodo()throws Exception {
+		
+		try {
+			return servUsuario.buscarTodasLosUsuarios();
+		}catch(Exception e) {
+			throw new Exception();
+		}
+	}
+		
 }
